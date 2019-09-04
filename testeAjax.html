@@ -1,0 +1,94 @@
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css"></style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="./javascript/dist/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script>
+
+	
+$(document).ready(function(){
+	 $('.cep').mask('00000-000');
+	$("#form").validate({
+		rules:{
+			"pesquisa": {
+				required: true
+			}
+		},
+		messages:{
+			"pesquisa": "Campo obrigatório"
+		},
+		submitHandler: function(form){
+			var cidade= $("#pesquisa").val();
+
+			$.ajax({
+  				url: "https://api.postmon.com.br/v1/cep/"+cidade,
+  				success: function(r){
+  				$("#pesquisa").val("");
+				$("#rua").val(r.logradouro);
+				$("#bairro").val(r.bairro);
+				$("#cidade").val(r.cidade);
+				$("#estado").val(r.estado);
+  			},
+  				error: function(error){
+				$("#message").html("CEP inexistente");
+				$("#form").find("input").val("");
+
+  				},
+
+			});
+		}
+	});
+  
+
+});
+
+	
+
+</script>
+</head>
+<body>
+<div class="container">
+<div class="mx-5" id="message" align="center"></div>
+
+<form id="form" action="#" method="post">
+	<div class="form-group">
+    		<label for="pesquisa">Pesquisa</label>
+    		<input type="text" name="pesquisa" class="form-control cep" id="pesquisa"  placeholder="">
+    </div>	
+    
+	<br>
+	
+	<div class="form-group">
+    	<label for="rua">Rua</label>
+    	<input type="text"  class="form-control" id="rua"  placeholder="" disabled>
+    </div>
+		 
+	
+	<div class="form-group">
+    	<label for="bairro">Bairro</label>
+    	<input type="text" class="form-control" id="bairro"  placeholder="" disabled>
+    </div>
+	
+		<div class="form-group">
+    		<label for="cidade">Cidade</label>
+    		<input type="text" class="form-control" id="cidade"  placeholder="" disabled> 
+    	</div>
+	
+	<div class="form-group">
+    		<label for="estado">Estado</label>
+    		<input type="text" class="form-control" id="estado"  placeholder="" disabled>
+    </div>
+<button class="btn btn-primary" type="submit">Pesquisa</button>
+</form>
+<br>
+</div>
+</body>
+</html>
